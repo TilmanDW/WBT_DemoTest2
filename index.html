@@ -44,7 +44,7 @@
                 <div class="output-container">
                     <div id="loadingSpinner" class="spinner" style="display: none;">
                         <div class="spinner-circle"></div>
-                        <p>AI is processing your text...</p>
+                        <p>Mistral AI is processing your text...</p>
                     </div>
                     <div id="outputText" class="output-text">
                         Your processed text will appear here...
@@ -59,10 +59,14 @@
         <footer class="footer">
             <div class="footer-content">
                 <h3>🤖 AI Model Information</h3>
-                <p><strong>Model:</strong> Rule-based processing engine with GPT-inspired logic patterns</p>
-                <p><strong>Version:</strong> Demo v1.0 (Educational purposes)</p>
-                <p><strong>Limitations:</strong> This demo uses predefined response patterns rather than live AI models. Results are generated using intelligent rule-based processing to simulate AI capabilities. For production use, integration with models like Mistral 7B or Llama 3.2 would provide more dynamic and contextual responses.</p>
-                <p><strong>Note:</strong> Processing is optimized for English and German text content.</p>
+                <p><strong>Model:</strong> Mistral-7B-Instruct-v0.3</p>
+                <p><strong>Developer:</strong> Mistral AI</p>
+                <p><strong>Provider:</strong> Hugging Face Inference API</p>
+                <p><strong>Parameters:</strong> 7.3 billion parameters, optimized for instruction following</p>
+                <p><strong>Version:</strong> v0.3 (September 2024) - Latest stable release</p>
+                <p><strong>Capabilities:</strong> Advanced text summarization, metadata extraction, creative rewriting, multilingual support (English, German, French, Spanish, Italian)</p>
+                <p><strong>Limitations:</strong> Maximum input length ~8000 tokens (~6000 words). Response quality depends on input clarity. Free API tier includes rate limiting during peak hours. Processing time: 2-10 seconds depending on text length and server load.</p>
+                <p><strong>Fallback:</strong> Demo mode activates automatically if API is unavailable, ensuring consistent functionality.</p>
             </div>
         </footer>
     </div>
