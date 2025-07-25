@@ -21,30 +21,125 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Missing text or operation' });
         }
 
-        let result = '';
+        // Limit input length to prevent API issues
+        const maxLength = 6000;
+        const processText = text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 
-        switch (operation) {
-            case 'summarize':
-                result = summarizeText(text);
-                break;
-            case 'metadata':
-                result = extractMetadata(text);
-                break;
-            case 'poem':
-                result = rewriteAsKidsPoem(text);
-                break;
-            default:
-                result = 'Unknown operation';
+        // Try Mistral API first
+        if (process.env.HUGGINGFACE_API_KEY) {
+            try {
+                const mistralResult = await callMistralAPI(processText, operation);
+                return res.status(200).json({ result: mistralResult, source: 'Mistral AI' });
+            } catch (apiError) {
+                console.log('Mistral API failed:', apiError.message);
+            }
         }
 
-        res.status(200).json({ result });
+        // Fallback to enhanced demo responses
+        console.log('Using enhanced demo mode');
+        let result = getDemoResponse(operation, processText);
+        res.status(200).json({ result: result + '\n\n<em>📝 Generated using demo mode</em>', source: 'Demo Mode' });
+
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 }
 
-function summarizeText(text) {
+async function callMistralAPI(text, operation) {
+    const prompts = {
+        summarize: `<s>[INST] Please summarize the following text in exactly 5 lines or less. Focus on the most important messages and key points. Make each line a complete thought:
+
+${text} [/INST]`,
+
+        metadata: `<s>[INST] Analyze the following text and extract metadata. Provide exactly 5 keywords and 5 key concepts.
+
+Format your response exactly like this:
+**Keywords:**
+• [keyword 1]
+• [keyword 2] 
+• [keyword 3]
+• [keyword 4]
+• [keyword 5]
+
+**Concepts:**
+• [concept 1]
+• [concept 2]
+• [concept 3]
+• [concept 4]
+• [concept 5]
+
+Text to analyze:
+${text} [/INST]`,
+
+        poem: `<s>[INST] Rewrite the following text as a fun, simple poem suitable for children aged 6-9 years old. Use:
+- Simple vocabulary they can understand
+- Fun rhymes and rhythm
+- Make it educational and entertaining
+- Keep the core message but make it child-friendly
+
+Text to rewrite:
+${text} [/INST]`
+    };
+
+    const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            inputs: prompts[operation],
+            parameters: {
+                max_new_tokens: operation === 'poem' ? 600 : 400,
+                temperature: operation === 'poem' ? 0.8 : 0.7,
+                top_p: 0.9,
+                repetition_penalty: 1.1,
+                return_full_text: false
+            },
+            options: {
+                wait_for_model: true,
+                use_cache: false
+            }
+        })
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Mistral API error: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+    
+    if (result && result[0] && result[0].generated_text) {
+        let generatedText = result[0].generated_text.trim();
+        
+        // Clean up the response
+        generatedText = generatedText.replace(/\[INST\].*?\[\/INST\]/g, '').trim();
+        generatedText = generatedText.replace(/^<s>|<\/s>$/g, '').trim();
+        
+        return generatedText;
+    } else if (result.error) {
+        throw new Error(`Mistral API error: ${result.error}`);
+    } else {
+        throw new Error('Invalid API response format');
+    }
+}
+
+function getDemoResponse(operation, text) {
+    switch(operation) {
+        case 'summarize':
+            return getSummary(text);
+        case 'metadata':
+            return getMetadata(text);
+        case 'poem':
+            return getKidsPoem(text);
+        default:
+            return 'Text processed successfully using demo mode.';
+    }
+}
+
+function getSummary(text) {
     if (text.includes('emperor') || text.toLowerCase().includes('chaplin')) {
         return `Charlie Chaplin's speech rejects dictatorship and advocates for helping all people regardless of race or religion.
 He argues that greed has poisoned humanity and led to hatred, misery, and bloodshed worldwide.
@@ -64,7 +159,7 @@ In our hectic, stressful world, instant soup proves that simplicity and enjoymen
     }
 }
 
-function extractMetadata(text) {
+function getMetadata(text) {
     let keywords = [];
     let concepts = [];
     
@@ -75,7 +170,6 @@ function extractMetadata(text) {
         keywords = ['convenience', 'simplicity', 'instant food', 'efficiency', 'comfort'];
         concepts = ['Modern lifestyle solutions', 'Food technology appreciation', 'Time-saving cooking', 'Simple pleasures', 'Practical minimalism'];
     } else {
-        // Generic keyword extraction
         const words = text.toLowerCase().split(/\W+/);
         const wordFreq = {};
         
@@ -92,22 +186,94 @@ function extractMetadata(text) {
             
         concepts = [
             'Primary theme analysis',
-            'Content structure patterns',
+            'Content structure patterns', 
             'Contextual relationships',
             'Information hierarchy',
             'Message delivery method'
         ];
     }
     
-    return `<strong>Keywords:</strong><br>• ${keywords.join('<br>• ')}<br><br><strong>Concepts:</strong><br>• ${concepts.join('<br>• ')}`;
+    return `**Keywords:**
+• ${keywords.join('\n• ')}
+
+**Concepts:**
+• ${concepts.join('\n• ')}`;
 }
 
-function rewriteAsKidsPoem(text) {
+function getKidsPoem(text) {
     if (text.includes('emperor') || text.toLowerCase().includes('chaplin')) {
-        return `<strong>A Poem About Being Kind to Everyone</strong><br><br>I don't want to be a king or queen,<br>I just want to help and be nice, you see!<br>All people are special, both you and me,<br>We should share our toys and play happily.<br><br>Sometimes grown-ups get very mad,<br>And that makes everyone feel quite sad.<br>But we can choose to be kind each day,<br>To laugh and sing and dance and play.<br><br>Our phones and computers help us talk,<br>To friends who live far down the block.<br>Let's use them to spread joy around,<br>And make sure love is what we've found!<br><br>Remember kids, be sweet and true,<br>Help others just like they help you.<br>The world needs kindness, that's the key,<br>To make everyone happy as can be!`;
+        return `**A Poem About Being Kind to Everyone**
+
+I don't want to be a king or queen,
+I just want to help and be nice, you see!
+All people are special, both you and me,
+We should share our toys and play happily.
+
+Sometimes grown-ups get very mad,
+And that makes everyone feel quite sad.
+But we can choose to be kind each day,
+To laugh and sing and dance and play.
+
+Our phones and computers help us talk,
+To friends who live far down the block.
+Let's use them to spread joy around,
+And make sure love is what we've found!
+
+Remember kids, be sweet and true,
+Help others just like they help you.
+The world needs kindness, that's the key,
+To make everyone happy as can be!`;
     } else if (text.toLowerCase().includes('suppe') || text.toLowerCase().includes('tüten')) {
-        return `<strong>The Magic Soup Song</strong><br><br>There's a packet in the kitchen,<br>With some magic soup inside!<br>Add some water, hot and steamy,<br>Watch the magic come alive!<br><br>Tiny pieces start to wiggle,<br>As they grow into a meal,<br>It's like watching little fairies,<br>Make something warm and real!<br><br>When I'm hungry and I'm tired,<br>And I need a quick surprise,<br>Magic soup is always ready,<br>Right before my very eyes!<br><br>Some might say it's just a packet,<br>But I know that they are wrong,<br>'Cause the best things come in simple ways,<br>That's why I sing this song!<br><br>Magic soup, oh magic soup,<br>You make my tummy smile,<br>Thanks for being there to help me,<br>You make eating fun worthwhile!`;
+        return `**The Magic Soup Song**
+
+There's a packet in the kitchen,
+With some magic soup inside!
+Add some water, hot and steamy,
+Watch the magic come alive!
+
+Tiny pieces start to wiggle,
+As they grow into a meal,
+It's like watching little fairies,
+Make something warm and real!
+
+When I'm hungry and I'm tired,
+And I need a quick surprise,
+Magic soup is always ready,
+Right before my very eyes!
+
+Some might say it's just a packet,
+But I know that they are wrong,
+'Cause the best things come in simple ways,
+That's why I sing this song!
+
+Magic soup, oh magic soup,
+You make my tummy smile,
+Thanks for being there to help me,
+You make eating fun worthwhile!`;
     } else {
-        return `<strong>A Special Story Poem</strong><br><br>Once upon a time so bright,<br>There was a story full of light!<br>With words that danced and words that played,<br>A magical tale that someone made.<br><br>The story talks of many things,<br>Like butterflies with pretty wings,<br>It teaches us what's good to know,<br>And helps our little minds to grow.<br><br>Every word is like a friend,<br>That stays with us until the end,<br>They whisper secrets, sing us songs,<br>And help us learn what's right and wrong.<br><br>So when you read this story dear,<br>Remember that the words are here,<br>To make you smile and make you think,<br>Like colorful drops of magic ink!<br><br>Stories are treasures, shiny and new,<br>They're gifts from writers, just for you!`;
+        return `**A Special Story Poem**
+
+Once upon a time so bright,
+There was a story full of light!
+With words that danced and words that played,
+A magical tale that someone made.
+
+The story talks of many things,
+Like butterflies with pretty wings,
+It teaches us what's good to know,
+And helps our little minds to grow.
+
+Every word is like a friend,
+That stays with us until the end,
+They whisper secrets, sing us songs,
+And help us learn what's right and wrong.
+
+So when you read this story dear,
+Remember that the words are here,
+To make you smile and make you think,
+Like colorful drops of magic ink!
+
+Stories are treasures, shiny and new,
+They're gifts from writers, just for you!`;
     }
 }
