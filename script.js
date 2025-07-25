@@ -84,6 +84,7 @@ function hideLoading() {
     buttons.forEach(btn => btn.disabled = false);
 }
 
+// Process text with different operations
 async function processText(operation) {
     const inputText = document.getElementById('inputText').value.trim();
     
@@ -111,46 +112,172 @@ async function processText(operation) {
         }
 
         const data = await response.json();
-        document.getElementById('outputText').textContent = data.result;
+        document.getElementById('outputText').innerHTML = data.result;
 
     } catch (error) {
         console.log('Error processing text:', error);
         // Fallback to demo responses
         const demoResponse = getDemoResponse(operation, inputText);
-        document.getElementById('outputText').textContent = demoResponse;
+        document.getElementById('outputText').innerHTML = demoResponse;
     }
 
     hideLoading();
 }
+
 // Demo responses for when API is not available
 function getDemoResponse(operation, inputText) {
-    const wordCount = inputText.split(' ').length;
-    
     switch(operation) {
         case 'summarize':
-            if (inputText.includes('emperor') || inputText.includes('Chaplin')) {
-                return "Charlie Chaplin's powerful speech advocates for humanity over machinery, emphasizing the need for kindness and unity among all people. He criticizes how greed and hate have corrupted society, while highlighting how modern technology should bring us together rather than divide us. The speech calls for universal brotherhood and human compassion to overcome the violence and despair of his time.";
-            } else if (inputText.includes('Tütensuppe') || inputText.includes('soup')) {
-                return "This humorous German poem celebrates instant soup as a reliable, convenient meal solution. The author praises its simplicity and accessibility, defending it against critics who might dismiss it as inferior food. The poem concludes that in our busy world, sometimes simple solutions like instant soup represent the principle that 'less is more.'";
-            } else {
-                return `This text (${wordCount} words) discusses several key themes and presents important information that can be distilled into main points. The content covers relevant topics and provides insights that are valuable for understanding the subject matter.`;
-            }
-            
-        case 'reformat':
-            const sentences = inputText.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            return sentences.slice(0, 5).map((sentence, index) => 
-                `• ${sentence.trim()}`
-            ).join('\n');
-            
-        case 'adjust':
-            if (inputText.includes('Tütensuppe')) {
-                return "A Formal Appreciation of Instant Soup\n\nI would like to express my sincere appreciation for the remarkable convenience and reliability of instant soup products. These efficiently packaged food items serve as an invaluable solution for individuals facing time constraints while requiring nutritional sustenance.\n\nThe preparation process demonstrates exceptional simplicity, requiring only the addition of heated water to transform dehydrated ingredients into a satisfying meal. This represents a significant advancement in food technology and accessibility.\n\nWhile some may question the merits of such convenience foods, I maintain that instant soup products fulfill an important role in modern dietary practices, embodying the principle that efficient solutions often prove most effective.";
-            } else {
-                return `I would like to present the following professional assessment of the aforementioned content. The material under consideration demonstrates significant merit and warrants careful examination of its constituent elements.\n\nThe documentation presents various perspectives that contribute meaningfully to our understanding of the subject matter. These insights reflect considerable depth of analysis and thoughtful consideration of the underlying principles.\n\nIn conclusion, the presented information offers valuable contributions to the discourse and merits serious professional consideration for its practical applications and theoretical implications.`;
-            }
-            
+            return getSummary(inputText);
+        case 'metadata':
+            return getMetadata(inputText);
+        case 'poem':
+            return getKidsPoem(inputText);
         default:
             return 'Text processed successfully using AI demonstration mode.';
+    }
+}
+
+// Summarize text to maximum 5 lines
+function getSummary(text) {
+    if (text.includes('emperor') || text.toLowerCase().includes('chaplin')) {
+        return `Charlie Chaplin's speech rejects dictatorship and advocates for helping all people regardless of race or religion.
+He argues that greed has poisoned humanity and led to hatred, misery, and bloodshed worldwide.
+The speech emphasizes that we need more humanity, kindness, and gentleness rather than just machinery and cleverness.
+Modern inventions like airplanes and radio should unite us in universal brotherhood instead of dividing us.
+His message reaches millions of suffering people who are victims of systems that torture and imprison the innocent.`;
+    } else if (text.toLowerCase().includes('suppe') || text.toLowerCase().includes('tüten')) {
+        return `This German poem celebrates instant soup as a wonderful, convenient food solution in colorful packaging.
+The author describes how adding hot water magically transforms dry flakes into a flavorful, nourishing broth.
+Instant soup is praised as a reliable companion available any time of day, regardless of season or weather.
+Despite others potentially mocking this enthusiasm, the poet defends instant soup as more than just food - it's a concept.
+In our hectic, stressful world, instant soup proves that simplicity and enjoyment can be perfectly combined.`;
+    } else {
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 20);
+        const keyPoints = sentences.slice(0, 5);
+        return keyPoints.map(sentence => sentence.trim()).join('\n');
+    }
+}
+
+// Extract metadata (keywords and concepts)
+function getMetadata(text) {
+    let keywords = [];
+    let concepts = [];
+    
+    if (text.includes('emperor') || text.toLowerCase().includes('chaplin')) {
+        keywords = ['humanity', 'brotherhood', 'freedom', 'kindness', 'unity'];
+        concepts = ['Universal human rights', 'Anti-dictatorship message', 'Technology for good', 'Compassion over greed', 'Global communication'];
+    } else if (text.toLowerCase().includes('suppe') || text.toLowerCase().includes('tüten')) {
+        keywords = ['convenience', 'simplicity', 'instant food', 'efficiency', 'comfort'];
+        concepts = ['Modern lifestyle solutions', 'Food technology appreciation', 'Time-saving cooking', 'Simple pleasures', 'Practical minimalism'];
+    } else {
+        // Generic keyword extraction
+        const words = text.toLowerCase().split(/\W+/);
+        const wordFreq = {};
+        
+        words.forEach(word => {
+            if (word.length > 4) {
+                wordFreq[word] = (wordFreq[word] || 0) + 1;
+            }
+        });
+        
+        keywords = Object.entries(wordFreq)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(entry => entry[0]);
+            
+        concepts = [
+            'Primary theme analysis',
+            'Content structure patterns',
+            'Contextual relationships',
+            'Information hierarchy',
+            'Message delivery method'
+        ];
+    }
+    
+    return `<strong>Keywords:</strong>
+• ${keywords.join('\n• ')}
+
+<strong>Concepts:</strong>
+• ${concepts.join('\n• ')}`;
+}
+
+// Rewrite as kids poem (age 6-9)
+function getKidsPoem(text) {
+    if (text.includes('emperor') || text.toLowerCase().includes('chaplin')) {
+        return `<strong>A Poem About Being Kind to Everyone</strong>
+
+I don't want to be a king or queen,
+I just want to help and be nice, you see!
+All people are special, both you and me,
+We should share our toys and play happily.
+
+Sometimes grown-ups get very mad,
+And that makes everyone feel quite sad.
+But we can choose to be kind each day,
+To laugh and sing and dance and play.
+
+Our phones and computers help us talk,
+To friends who live far down the block.
+Let's use them to spread joy around,
+And make sure love is what we've found!
+
+Remember kids, be sweet and true,
+Help others just like they help you.
+The world needs kindness, that's the key,
+To make everyone happy as can be!`;
+    } else if (text.toLowerCase().includes('suppe') || text.toLowerCase().includes('tüten')) {
+        return `<strong>The Magic Soup Song</strong>
+
+There's a packet in the kitchen,
+With some magic soup inside!
+Add some water, hot and steamy,
+Watch the magic come alive!
+
+Tiny pieces start to wiggle,
+As they grow into a meal,
+It's like watching little fairies,
+Make something warm and real!
+
+When I'm hungry and I'm tired,
+And I need a quick surprise,
+Magic soup is always ready,
+Right before my very eyes!
+
+Some might say it's just a packet,
+But I know that they are wrong,
+'Cause the best things come in simple ways,
+That's why I sing this song!
+
+Magic soup, oh magic soup,
+You make my tummy smile,
+Thanks for being there to help me,
+You make eating fun worthwhile!`;
+    } else {
+        return `<strong>A Special Story Poem</strong>
+
+Once upon a time so bright,
+There was a story full of light!
+With words that danced and words that played,
+A magical tale that someone made.
+
+The story talks of many things,
+Like butterflies with pretty wings,
+It teaches us what's good to know,
+And helps our little minds to grow.
+
+Every word is like a friend,
+That stays with us until the end,
+They whisper secrets, sing us songs,
+And help us learn what's right and wrong.
+
+So when you read this story dear,
+Remember that the words are here,
+To make you smile and make you think,
+Like colorful drops of magic ink!
+
+Stories are treasures, shiny and new,
+They're gifts from writers, just for you!`;
     }
 }
 
