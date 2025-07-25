@@ -226,3 +226,43 @@ header p {
         width: 100%;
     }
 }
+
+/* Add this to your existing styles.css file */
+
+.footer {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 30px 40px;
+    margin-top: 40px;
+}
+
+.footer-content h3 {
+    color: #ecf0f1;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.footer-content p {
+    margin-bottom: 8px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.footer-content strong {
+    color: #3498db;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 20px;
+    }
+    
+    .footer-content h3 {
+        font-size: 1.1em;
+    }
+    
+    .footer-content p {
+        font-size: 0.9em;
+    }
+}
