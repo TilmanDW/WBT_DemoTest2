@@ -1,180 +1,265 @@
-// German example texts
-const examples = {
-    1: `Es tut mir leid, aber ich will kein Kaiser sein. Das ist nicht mein Geschäft. Ich will niemanden regieren oder erobern. Ich möchte allen helfen - wenn möglich - Juden, Heiden - Schwarzen - Weißen. Wir alle wollen einander helfen. So sind die Menschen. Wir wollen durch das Glück des anderen leben - nicht durch das Elend des anderen. Wir wollen uns nicht hassen und verachten. Auf dieser Welt ist Platz für jeden. Und die gute Erde ist reich und kann für jeden sorgen. Der Weg des Lebens kann frei und schön sein, aber wir haben den Weg verloren.
-
-Die Gier hat die Seelen der Menschen vergiftet, hat die Welt mit Hass ummauert, hat uns in Elend und Blutvergießen hineinmarschiert. Wir haben Geschwindigkeit entwickelt, aber uns eingeschlossen. Maschinen, die Überfluss geben, haben uns in Not gelassen. Unser Wissen hat uns zynisch gemacht. Unsere Klugheit, hart und lieblos. Wir denken zu viel und fühlen zu wenig. Mehr als Maschinen brauchen wir Menschlichkeit. Mehr als Klugheit brauchen wir Freundlichkeit und Sanftmut. Ohne diese Eigenschaften wird das Leben gewalttätig sein und alles wird verloren gehen.`,
-
-    2: `Ode an die Tütensuppe
-
-Oh Tütensuppe, du wunderbares Ding,
-In bunter Verpackung, so leicht und so ring.
-Wenn der Hunger mich plagt und die Zeit mir fehlt,
-Bist du es, die mich stets aufs Neue beseelt.
-
-Mit heißem Wasser nur kurz übergossen,
-Verwandelst du dich, als wärst du erlöst.
-Von trockenen Flöckchen zu würziger Brühe,
-Ein Wunder der Technik, das ich täglich vollziehe.
-
-Du kennst keine Saison, keine Zeit und kein Wetter,
-Bist mein treuer Begleiter, mein Hunger-Erretter.
-Ob Mittag, ob Abend, ob früh oder spät,
-Du bist stets bereit, wenn mein Magen sich dreht.
-
-Manch einer mag lächeln ob meiner Begeisterung,
-Doch ich singe dein Lob ohne jede Verklärung.
-Du bist mehr als nur Nahrung, du bist ein Konzept,
-Das Einfachheit und Genuss perfekt verknüpft.`,
-
-    3: `Der Erlkönig
-von Johann Wolfgang von Goethe
-
-Wer reitet so spät durch Nacht und Wind?
-Es ist der Vater mit seinem Kind;
-Er hat den Knaben wohl in dem Arm,
-Er faßt ihn sicher, er hält ihn warm.
-
-Mein Sohn, was birgst du so bang dein Gesicht? –
-Siehst, Vater, du den Erlkönig nicht?
-Den Erlenkönig mit Kron' und Schweif? –
-Mein Sohn, es ist ein Nebelstreif.
-
-„Du liebes Kind, komm, geh mit mir!
-Gar schöne Spiele spiel' ich mit dir;
-Manch' bunte Blumen sind an dem Strand,
-Meine Mutter hat manch gülden Gewand."
-
-Mein Vater, mein Vater, und hörest du nicht,
-Was Erlenkönig mir leise verspricht? –
-Sei ruhig, bleibe ruhig, mein Kind;
-In dürren Blättern säuselt der Wind.`
-};
-
-// Load example text
-function loadExample(exampleNum) {
-    const inputText = document.getElementById('inputText');
-    inputText.value = examples[exampleNum];
-    inputText.style.height = 'auto';
-    inputText.style.height = inputText.scrollHeight + 'px';
+/* Copy your entire existing styles.css content here - it works for both languages */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-// Clear text
-function clearText() {
-    document.getElementById('inputText').value = '';
-    document.getElementById('outputText').textContent = 'Ihr verarbeiteter Text wird hier erscheinen...';
-    document.getElementById('copyBtn').style.display = 'none';
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
 }
 
-// Copy output to clipboard
-function copyOutput() {
-    const outputText = document.getElementById('outputText').textContent;
-    navigator.clipboard.writeText(outputText).then(() => {
-        const copyBtn = document.getElementById('copyBtn');
-        const originalText = copyBtn.textContent;
-        copyBtn.textContent = '✅ Kopiert!';
-        setTimeout(() => {
-            copyBtn.textContent = originalText;
-        }, 2000);
-    });
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
-// Show loading state
-function showLoading() {
-    document.getElementById('loadingSpinner').style.display = 'flex';
-    document.getElementById('outputText').style.display = 'none';
-    document.getElementById('copyBtn').style.display = 'none';
-    
-    // Disable all process buttons
-    const buttons = document.querySelectorAll('.process-btn');
-    buttons.forEach(btn => btn.disabled = true);
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px;
+    text-align: center;
 }
 
-// Hide loading state
-function hideLoading() {
-    document.getElementById('loadingSpinner').style.display = 'none';
-    document.getElementById('outputText').style.display = 'block';
-    document.getElementById('copyBtn').style.display = 'block';
-    
-    // Re-enable all process buttons
-    const buttons = document.querySelectorAll('.process-btn');
-    buttons.forEach(btn => btn.disabled = false);
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
-// Process text with different operations
-async function processText(operation) {
-    const inputText = document.getElementById('inputText').value.trim();
-    
-    if (!inputText) {
-        alert('Bitte geben Sie zuerst einen Text ein!');
-        return;
+header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+.main-content {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.input-section {
+    grid-column: 1 / -1;
+}
+
+.input-section h2,
+.controls-section h2,
+.output-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.example-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.example-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.example-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+}
+
+.clear-btn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.clear-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
+
+#inputText {
+    width: 100%;
+    height: 200px;
+    padding: 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 15px;
+    font-size: 1em;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+#inputText:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+}
+
+.button-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.process-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.process-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.process-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.output-container {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 25px;
+    min-height: 200px;
+    border: 2px solid #e9ecef;
+    position: relative;
+}
+
+.output-text {
+    line-height: 1.6;
+    font-size: 1em;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+}
+
+.spinner-circle {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e0e0e0;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.copy-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.copy-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.footer {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 30px 40px;
+    margin-top: 40px;
+}
+
+.footer-content h3 {
+    color: #ecf0f1;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.footer-content p {
+    margin-bottom: 8px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.footer-content strong {
+    color: #3498db;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 20px;
     }
-
-    if (inputText.length > 6000) {
-        if (!confirm('Ihr Text ist sehr lang und wird auf 6000 Zeichen gekürzt. Fortfahren?')) {
-            return;
-        }
+    
+    header {
+        padding: 30px 20px;
     }
-
-    showLoading();
-
-    try {
-        const response = await fetch('/api/process-de', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                text: inputText,
-                operation: operation
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Server-Fehler: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        // Format the output properly
-        let formattedOutput = data.result;
-        if (operation === 'metadata' || operation === 'poem') {
-            formattedOutput = formattedOutput.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            formattedOutput = formattedOutput.replace(/\n/g, '<br>');
-        }
-        
-        document.getElementById('outputText').innerHTML = formattedOutput;
-
-        // Show source indicator
-        if (data.source === 'Mistral AI') {
-            console.log('✅ Antwort von Mistral AI generiert');
-        } else {
-            console.log('📝 Antwort im Demo-Modus generiert');
-        }
-
-    } catch (error) {
-        console.error('Fehler beim Verarbeiten des Textes:', error);
-        
-        // Show user-friendly error message in German
-        document.getElementById('outputText').innerHTML = `
-            <div style="color: #e74c3c; padding: 20px; background: #ffeaa7; border-radius: 8px; border-left: 4px solid #e74c3c;">
-                <strong>⚠️ Verarbeitungsfehler</strong><br>
-                Ihre Anfrage konnte momentan nicht bearbeitet werden. Dies könnte folgende Ursachen haben:<br>
-                • Hohe Serverlast<br>
-                • Netzwerkverbindungsprobleme<br>
-                • API-Ratenlimits<br><br>
-                <em>Bitte versuchen Sie es in einigen Momenten erneut.</em>
-            </div>
-        `;
+    
+    header h1 {
+        font-size: 2em;
     }
-
-    hideLoading();
+    
+    .example-buttons {
+        flex-direction: column;
+    }
+    
+    .example-btn,
+    .clear-btn {
+        width: 100%;
+    }
+    
+    .footer {
+        padding: 20px;
+    }
+    
+    .footer-content h3 {
+        font-size: 1.1em;
+    }
+    
+    .footer-content p {
+        font-size: 0.9em;
+    }
 }
-
-// Auto-resize textarea
-document.addEventListener('DOMContentLoaded', function() {
-    const textarea = document.getElementById('inputText');
-    textarea.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = this.scrollHeight + 'px';
-    });
-});
