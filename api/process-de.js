@@ -172,4 +172,146 @@ function getMetadataGerman(text) {
     
     if (text.includes('Kaiser') || text.toLowerCase().includes('chaplin') || text.includes('regieren')) {
         keywords = ['Menschlichkeit', 'Brüderlichkeit', 'Freiheit', 'Freundlichkeit', 'Einheit'];
-        concepts = ['Universelle Menschenrechte', 'Anti-Diktatur-Botschaft', 'Technologie für
+        concepts = ['Universelle Menschenrechte', 'Anti-Diktatur-Botschaft', 'Technologie für das Gute', 'Mitgefühl über Gier', 'Globale Kommunikation'];
+    } else if (text.toLowerCase().includes('suppe') || text.toLowerCase().includes('tüten')) {
+        keywords = ['Bequemlichkeit', 'Einfachheit', 'Fertignahrung', 'Effizienz', 'Komfort'];
+        concepts = ['Moderne Lebensstil-Lösungen', 'Wertschätzung der Lebensmitteltechnologie', 'Zeitsparendes Kochen', 'Einfache Freuden', 'Praktischer Minimalismus'];
+    } else if (text.toLowerCase().includes('erlkönig') || text.toLowerCase().includes('goethe')) {
+        keywords = ['Mystik', 'Vater-Kind-Beziehung', 'Nacht', 'Verführung', 'Tod'];
+        concepts = ['Übernatürliche Erscheinungen', 'Elterliche Beschützung', 'Romantische Ballade', 'Mythologische Figuren', 'Dramatische Steigerung'];
+    } else {
+        // Generic German keyword extraction
+        const words = text.toLowerCase().split(/\W+/);
+        const wordFreq = {};
+        
+        words.forEach(word => {
+            if (word.length > 4) {
+                wordFreq[word] = (wordFreq[word] || 0) + 1;
+            }
+        });
+        
+        keywords = Object.entries(wordFreq)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(entry => entry[0]);
+            
+        concepts = [
+            'Primäre Themenanalyse',
+            'Inhaltliche Strukturmuster',
+            'Kontextuelle Beziehungen',
+            'Informationshierarchie',
+            'Botschaftsübermittlung'
+        ];
+    }
+    
+    return `**Schlüsselwörter:**
+• ${keywords.join('\n• ')}
+
+**Konzepte:**
+• ${concepts.join('\n• ')}`;
+}
+
+function getKidsPoemGerman(text) {
+    if (text.includes('Kaiser') || text.toLowerCase().includes('chaplin') || text.includes('regieren')) {
+        return `**Ein Gedicht über Freundlichkeit für alle**
+
+Ich will kein König oder Kaiser sein,
+Ich möchte nur zu allen freundlich sein!
+Alle Menschen sind besonders, du und ich,
+Wir sollten teilen und spielen fröhlich.
+
+Manchmal werden Erwachsene sehr böse,
+Und das macht alle traurig und nervöse.
+Aber wir können jeden Tag nett sein,
+Lachen, singen, tanzen - das ist fein!
+
+Unsere Handys und Computer helfen beim Sprechen,
+Mit Freunden weit weg, ohne zu brechen.
+Lass uns damit Freude verbreiten,
+Und Liebe zu allen Menschen bereiten!
+
+Denkt dran Kinder, seid süß und wahr,
+Helft anderen, das ist wunderbar.
+Die Welt braucht Freundlichkeit, das ist der Schlüssel,
+Um alle glücklich zu machen - das ist kein Rätsel!`;
+    } else if (text.toLowerCase().includes('suppe') || text.toLowerCase().includes('tüten')) {
+        return `**Das Zaubersuppen-Lied**
+
+Da ist ein Päckchen in der Küche,
+Mit Zaubersuppe drin so süße!
+Gieß heißes Wasser drauf geschwind,
+Schau zu, wie Zauberei beginnt!
+
+Die kleinen Stückchen fangen an zu hüpfen,
+Sie werden zu einem Essen zum Schlürfen,
+Wie kleine Feen, die zaubern können,
+Machen sie was Warmes zum Gönnen!
+
+Wenn ich hungrig bin und müde,
+Und brauche eine schnelle Güte,
+Ist Zaubersuppe immer bereit,
+Direkt vor meinen Augen - welche Freud!
+
+Manche sagen, es ist nur ein Päckchen,
+Aber ich weiß, sie irren sich, die Frätzchen,
+Denn die besten Sachen sind einfach und fein,
+Darum sing ich dieses Liedchen mein!
+
+Zaubersuppe, oh Zaubersuppe,
+Du machst meinen Bauch zur Freude-Truppe,
+Danke, dass du immer da bist für mich,
+Du machst das Essen lustig - das mag ich!`;
+    } else if (text.toLowerCase().includes('erlkönig') || text.toLowerCase().includes('goethe')) {
+        return `**Der Waldkönig - Eine Geschichte für Kinder**
+
+Es war einmal ein Papa fein,
+Der ritt mit seinem Kinderlein.
+Durch dunkle Nacht und wilden Wind,
+Er hielt ganz fest sein liebes Kind.
+
+"Papa, Papa, siehst du nicht,
+Den Waldkönig im Mondenlicht?
+Er winkt mir zu und lächelt nett,
+Will mit mir spielen im grünen Bett."
+
+"Mein Kind, das ist nur Wind im Baum,
+Das ist ein schöner Kindertraum.
+Die Blätter rascheln hin und her,
+Kein Waldkönig ist da, mein Herr."
+
+Aber manchmal, wenn wir träumen,
+Sehen wir Gestalten unter Bäumen.
+Das ist okay, träumen ist schön,
+Aber mit Papa ist's sicher zu geh'n!
+
+Denkt dran, Kinder, bei Nacht und Wind,
+Papa und Mama beschützen ihr Kind.
+Träume sind toll, doch sicher und warm,
+Ist es zuhause in Mamas Arm!`;
+    } else {
+        return `**Ein Besonderes Geschichten-Gedicht**
+
+Es war einmal vor langer Zeit,
+Eine Geschichte voller Fröhlichkeit!
+Mit Wörtern, die tanzen und hüpfen herum,
+Ein märchenhafter Text - ist das nicht krumm?
+
+Die Geschichte erzählt von vielen Sachen,
+Die Kinder zum Staunen und Lachen machen,
+Sie lehrt uns, was gut ist zu wissen,
+Und hilft unseren Köpfchen beim Denken - nicht missen!
+
+Jedes Wort ist wie ein Freund so nett,
+Der bei uns bleibt bis ins Bett,
+Sie flüstern Geheimnisse, singen uns Lieder,
+Und helfen uns lernen, immer wieder!
+
+Wenn ihr diese Geschichte lest, ihr Lieben,
+Denkt dran, die Wörter sind hier geblieben,
+Um euch zum Lächeln und Denken zu bringen,
+Wie bunte Tropfen, die fröhlich singen!
+
+Geschichten sind Schätze, glänzend und neu,
+Sie sind Geschenke für Kinder wie euch!`;
+    }
+}
