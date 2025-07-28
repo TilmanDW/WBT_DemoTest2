@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KI-Textverarbeitung Demo</title>
+    <title>Demo Textverarbeitung mit KI</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,45 +14,45 @@
         <a href="/de/" class="lang-btn active">🇩🇪 Deutsch</a>
     </div>
     <h1>🤖 KI-Textverarbeitung</h1>
-    <p>Erleben Sie die Kraft der KI mit Textzusammenfassung, Metadaten-Extraktion und kreativem Umschreiben</p>
+    <p>KI generiert ... z.B. Textzusammenfassungen, Metadaten oder neue Formate</p>
 </header>
 
         <div class="main-content">
             <div class="input-section">
-                <h2>Geben Sie Ihren Text ein</h2>
+                <h2>Aus Deiner Eingabe ...</h2>
                 <div class="example-buttons">
                     <button class="example-btn" onclick="loadExample(1)">📜 Chaplins Freiheitsrede</button>
                     <button class="example-btn" onclick="loadExample(2)">🍜 Ode an die Tütensuppe</button>
                     <button class="example-btn" onclick="loadExample(3)">📖 Goethes Erlkönig</button>
                     <button class="clear-btn" onclick="clearText()">🗑️ Alles löschen</button>
                 </div>
-                <textarea id="inputText" placeholder="Fügen Sie hier Ihren Text ein oder verwenden Sie eines der Beispiele oben..."></textarea>
+                <textarea id="inputText" placeholder="Füge hier einen eigenen Text ein oder wähle eines der obigen Beispiele..."></textarea>
             </div>
 
             <div class="controls-section">
-                <h2>KI-Verarbeitungsoptionen</h2>
+                <h2>Erstell die KI z.B. ...</h2>
                 <div class="button-grid">
                     <button class="process-btn" onclick="processText('summarize')" id="summarizeBtn">
-                        📋 Zusammenfassen (Max. 5 Zeilen)
+                        📋 ... eine Zusammenfassung (Max. 5 Zeilen)
                     </button>
                     <button class="process-btn" onclick="processText('metadata')" id="metadataBtn">
-                        🔍 Metadaten extrahieren
+                        🔍 ... Metadaten zum Text
                     </button>
                     <button class="process-btn" onclick="processText('poem')" id="poemBtn">
-                        🎭 Als Kinderpoem umschreiben
+                        🎭 ...ein Gedicht für Kinder
                     </button>
                 </div>
             </div>
 
             <div class="output-section">
-                <h2>KI-Ausgabe</h2>
+                <h2>Et voila - das Ergebnis. </h2>
                 <div class="output-container">
                     <div id="loadingSpinner" class="spinner" style="display: none;">
                         <div class="spinner-circle"></div>
                         <p>Mistral KI verarbeitet Ihren Text...</p>
                     </div>
                     <div id="outputText" class="output-text">
-                        Ihr verarbeiteter Text wird hier erscheinen...
+                        Hier erscheint das Ergebnis.
                     </div>
                     <button id="copyBtn" class="copy-btn" onclick="copyOutput()" style="display: none;">
                         📋 Ergebnis kopieren
@@ -63,11 +63,9 @@
 
         <footer class="footer">
             <div class="footer-content">
-                <h3>🤖 KI-Modellinformationen</h3>
-                <p><strong>Modell:</strong> Mistral-7B-Instruct-v0.3</p>
-                <p><strong>Entwickler:</strong> Mistral AI</p>
-                <p><strong>Anbieter:</strong> Hugging Face Inference API</p>
-                <p><strong>Parameter:</strong> 7,3 Milliarden Parameter, optimiert für Instruktionsbefolgung</p>
+                <h3>🤖 Hintergrundinformationen zur Demo</h3>
+                <p><strong>Wir verwenden hier das Modell:</strong> Mistral-7B-Instruct-v0.3 von Mistral AI</p>
+                <p><strong>Das Modell verfügt über:</strong> 7,3 Milliarden Parameter, optimiert für Instruktionsbefolgung</p>
                 <p><strong>Version:</strong> v0.3 (September 2024) - Neueste stabile Version</p>
                 <p><strong>Fähigkeiten:</strong> Erweiterte Textzusammenfassung, Metadaten-Extraktion, kreatives Umschreiben, mehrsprachige Unterstützung (Deutsch, Englisch, Französisch, Spanisch, Italienisch)</p>
                 <p><strong>Einschränkungen:</strong> Maximale Eingabelänge ~8000 Token (~6000 Wörter). Antwortqualität hängt von der Eingabeklarheit ab. Kostenlose API-Stufe beinhaltet Ratenbegrenzung zu Stoßzeiten. Verarbeitungszeit: 2-10 Sekunden je nach Textlänge und Serverlast.</p>
